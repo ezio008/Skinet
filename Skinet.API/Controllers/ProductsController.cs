@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Skinet.Core.Entities;
-using Skinet.Infrastructure;
+using Skinet.Core.Interfaces.IRepository;
 
 namespace Skinet.API.Controllers
 {
@@ -9,31 +8,42 @@ namespace Skinet.API.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IProductsRepository _productsRepository;
 
-        public ProductsController(ApplicationDbContext dbContext)
+        public ProductsController(IProductsRepository productsRepository)
         {
-            _dbContext = dbContext;
+            _productsRepository = productsRepository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts()
         {
-            var products = await _dbContext.Products.ToListAsync();
-            return Ok(products);
+            return Ok(await _productsRepository.GetProductsAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+            var product = await _productsRepository.GetProductByIdAsync(id);
 
-            if(product is null)
+            if (product is null)
             {
                 return BadRequest();
             }
 
             return Ok(product);
+        }
+
+        [HttpGet("brands")]
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
+        {
+            return Ok(await _productsRepository.GetProductBrandsAsync());
+        }
+
+        [HttpGet("types")]
+        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
+        {
+            return Ok(await _productsRepository.GetProductTypesAsync());
         }
     }
 }
