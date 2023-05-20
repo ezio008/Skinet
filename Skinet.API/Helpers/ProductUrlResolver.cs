@@ -15,11 +15,11 @@ namespace Skinet.API.Helpers
 
         public string Resolve(Product source, ProductResponseDTO destination, string destMember, ResolutionContext context)
         {
-            if(!string.IsNullOrEmpty(source.PictureUrl))
+            if (!string.IsNullOrEmpty(source.PictureUrl))
             {
                 return _configuration["ApiUrl"] + source.PictureUrl;
             }
-            
+
             return null;
         }
     }

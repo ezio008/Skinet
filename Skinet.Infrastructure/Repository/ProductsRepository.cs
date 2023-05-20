@@ -11,7 +11,7 @@ namespace Skinet.Infrastructure.Repository
         public ProductsRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
-        }              
+        }
 
         public async Task<Product> GetProductByIdAsync(int id)
         {

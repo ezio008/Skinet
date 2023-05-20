@@ -13,7 +13,7 @@ namespace Skinet.Infrastructure.Repository
         public GenericRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
-        }        
+        }
 
         public async Task<T> GetByIdAsync(int id)
         {

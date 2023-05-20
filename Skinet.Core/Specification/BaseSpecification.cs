@@ -6,7 +6,7 @@ namespace Skinet.Core.Specification
     {
         public BaseSpecification()
         {
-            
+
         }
 
         public BaseSpecification(Expression<Func<T, bool>> criteria)
