@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Skinet.API.Helpers;
 using Skinet.Core.DTOs;
 using Skinet.Core.Entities;
 using Skinet.Core.Interfaces.IRepository;
@@ -26,13 +27,21 @@ namespace Skinet.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductResponseDTO>>> GetProducts()
+        public async Task<ActionResult<Pagination<ProductResponseDTO>>> GetProducts([FromQuery] ProductSpecParams productParams)
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification();
+            var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
+            var countSpec = new ProductWithFiltersForCountSpecification(productParams);
+
+            var totalItems = await _productsRepository.CountAsync(countSpec);
 
             var products = await _productsRepository.ListAsync(spec);
 
-            return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductResponseDTO>>(products));
+            var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductResponseDTO>>(products);
+
+            return Ok(new Pagination<ProductResponseDTO>(productParams.PageIndex,
+                productParams.PageSize,
+                totalItems,
+                data));
         }
 
         [HttpGet("{id}")]

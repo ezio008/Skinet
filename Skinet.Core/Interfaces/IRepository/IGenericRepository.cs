@@ -9,5 +9,6 @@ namespace Skinet.Core.Interfaces.IRepository
         Task<IReadOnlyList<T>> ListAllAsync();
         Task<T> GetByIdAsync(ISpecification<T> specification);
         Task<IReadOnlyList<T>> ListAsync(ISpecification<T> specification);
+        Task<int> CountAsync(ISpecification<T> specification);
     }
 }
